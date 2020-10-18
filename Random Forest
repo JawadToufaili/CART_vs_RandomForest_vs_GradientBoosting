@@ -1,0 +1,26 @@
+import pandas as pd
+
+adult=pd.read_csv("D:\Downloads\Adult.csv")
+adult=pd.get_dummies(adult,columns=['race','sex','workclass','marital-status'])
+
+X=adult.iloc[:,1:]
+y=adult.iloc[:,0]
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.3,random_state=3)
+
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score
+
+from sklearn.ensemble import RandomForestClassifier
+#Random Forest
+import numpy as np
+print("Random Forest")
+for i in range(1,10):
+    print("i= "+str(i))
+    RF=RandomForestClassifier(random_state=5,max_features=i,n_estimators=100)
+    model1=RF.fit(X_train,y_train)
+    y_test_pred1=model1.predict(X_test)
+    print("Accuracy score is: "+str(accuracy_score(y_test,y_test_pred1)))
+    scores=cross_val_score(estimator=model1,X=X,y=y,cv=5)
+    print("Cross Val score is: "+str(np.average(scores)))
