@@ -1,0 +1,27 @@
+import pandas as pd
+
+adult=pd.read_csv("D:\Downloads\Adult.csv")
+adult=pd.get_dummies(adult,columns=['race','sex','workclass','marital-status'])
+
+X=adult.iloc[:,1:]
+y=adult.iloc[:,0]
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.3,random_state=3)
+
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score
+
+from sklearn.ensemble import GradientBoostingClassifier
+import numpy as np
+
+#Gradient Boosting
+print("Gradient Boosting")
+for i in range(2,10):
+    print("i: "+str(i))
+    GB=GradientBoostingClassifier(random_state=5,min_samples_split=i,n_estimators=100)
+    model2=GB.fit(X_train,y_train)
+    y_test_pred2=model2.predict(X_test)
+    print("Accuracy score is : "+str(accuracy_score(y_test,y_test_pred2)))
+    scores=cross_val_score(estimator=model2,X=X,y=y,cv=5)
+    print("Cross Val score is: "+str(np.average(scores)))
